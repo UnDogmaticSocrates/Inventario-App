@@ -1,0 +1,12 @@
+1. Optimizar uso de inventario
+1.1. Consultar productos en tiempo real(revisar)
+Ventana emergente que contenga los productos que queremos ver
+1.2. Crear menus y sub menus
+Menu principal: abres tu inventario y quieres: 
+    -Consultar inventario (ver, filtrar y editar productos)
+    - agregar productos
+    -aliminar productos
+    - ubicar materiales
+    -categorias (revisar/organizar)
+    -dashboard del estado actual del inventario (productos escasos, fechas de entrada y salida de material, reportes, etc)
+    -pedidos (informacion de productos pendientes por llegar, pendientes por pedir, etc)
