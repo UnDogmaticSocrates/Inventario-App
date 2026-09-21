@@ -12,6 +12,7 @@ def crear_tablas():
             nombre TEXT NOT NULL,
             precio REAL NOT NULL, 
             stock INTEGER DEFAULT 0
+            ubicacion TEXT
         );
 
         CREATE TABLE IF NOT EXISTS proveedores(
@@ -20,6 +21,7 @@ def crear_tablas():
             telefono TEXT, 
             email TEXT
         );
+        
         CREATE TABLE IF NOT EXISTS categorias(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre TEXT NOT NULL, 

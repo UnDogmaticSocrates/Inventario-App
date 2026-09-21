@@ -1,13 +1,13 @@
 from base_datos.conection import conectar
 
 
-def crear_producto(codigo, nombre, precio, stock):
+def crear_producto(codigo, nombre, precio, stock, ubicacion):
     conexion = conectar()
 
     conexion.execute("""
-        INSERT INTO productos (codigo, nombre, precio, stock)
-        VALUES (?, ?, ?, ?)
-    """, (codigo, nombre, precio, stock))
+        INSERT INTO productos (codigo, nombre, precio, stock, ubicacion)
+        VALUES (?, ?, ?, ?, ?)
+    """, (codigo, nombre, precio, stock, ubicacion))
 
     conexion.commit()
     conexion.close()
@@ -43,7 +43,7 @@ def obtener_producto_por_id(id_producto):
     return producto
 
 
-def actualizar_producto(id, codigo, nombre, precio, stock):
+def actualizar_producto(id, codigo, nombre, precio, stock, ubicacion):
     conexion = conectar()
 
     conexion.execute("""
@@ -51,9 +51,10 @@ def actualizar_producto(id, codigo, nombre, precio, stock):
         SET codigo = ?,
             nombre = ?,
             precio = ?,
-            stock = ?
+            stock = ?,
+            ubicacion = ?
         WHERE id = ?
-    """, (codigo, nombre, precio, stock, id))
+    """, (codigo, nombre, precio, stock, ubicacion, id))
 
     conexion.commit()
     conexion.close()
