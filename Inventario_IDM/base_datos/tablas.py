@@ -5,7 +5,7 @@ def crear_tablas():
 
     cursor = conexion.cursor()
 
-    cursor.execute("""
+    cursor.executescript("""
         CREATE TABLE IF NOT EXISTS productos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             codigo TEXT UNIQUE, 
@@ -13,20 +13,19 @@ def crear_tablas():
             precio REAL NOT NULL, 
             stock INTEGER DEFAULT 0
         );
-        """)
 
-        #CREATE TABLE IF NOT EXISTS proveedores(
-            #id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            #nombre TEXT NOT NULL, 
-            #telefono TEXT, 
-            #email TEXT
-        #);
-        #CREATE TABLE IF NOT EXISTS categorias(
-            #id INTEGER PRIMARY KEY AUTOINCREMENT,
-            #nombre TEXT NOT NULL, 
-            #descripcion TEXT
-        #);
-        #""")
+        CREATE TABLE IF NOT EXISTS proveedores(
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            nombre TEXT NOT NULL, 
+            telefono TEXT, 
+            email TEXT
+        );
+        CREATE TABLE IF NOT EXISTS categorias(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL, 
+            descripcion TEXT
+        );
+    """)
 
     conexion.commit()
     conexion.close()

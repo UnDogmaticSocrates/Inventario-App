@@ -7,6 +7,6 @@ Menu principal: abres tu inventario y quieres:
     - agregar productos
     -aliminar productos
     - ubicar materiales
-    -categorias (revisar/organizar)
-    -dashboard del estado actual del inventario (productos escasos, fechas de entrada y salida de material, reportes, etc)
-    -pedidos (informacion de productos pendientes por llegar, pendientes por pedir, etc)
+    -categorias (revisar/organizar).
+    -dashboard del estado actual del inventario (productos escasos, fechas de entrada y salida de material, reportes, etc).
+    -pedidos (informacion de productos pendientes por llegar, pendientes por pedir, etc).
