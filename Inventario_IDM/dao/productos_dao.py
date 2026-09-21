@@ -1,7 +1,8 @@
 from base_datos.conection import conectar
 
+
 def crear_producto(codigo, nombre, precio, stock):
-    conexion =conectar()
+    conexion = conectar()
 
     conexion.execute("""
         INSERT INTO productos (codigo, nombre, precio, stock)
@@ -11,13 +12,12 @@ def crear_producto(codigo, nombre, precio, stock):
     conexion.commit()
     conexion.close()
 
-print("Producto agregado")
 
-def obtener_productos ():
+def obtener_productos():
     conexion = conectar()
     cursor = conexion.cursor()
 
-    conexion.execute("SELECT * FROM productos")
+    cursor.execute("SELECT * FROM productos")
 
     productos = cursor.fetchall()
 
@@ -25,11 +25,12 @@ def obtener_productos ():
 
     return productos
 
-def obtener_producto_por_id (id_producto):
+
+def obtener_producto_por_id(id_producto):
     conexion = conectar()
     cursor = conexion.cursor()
 
-    conexion.execute("""
+    cursor.execute("""
         SELECT *
         FROM productos
         WHERE id = ?
@@ -41,27 +42,27 @@ def obtener_producto_por_id (id_producto):
 
     return producto
 
-def actualizar_producto(id, codigo, nombre, precio, stock, descripcion):
+
+def actualizar_producto(id, codigo, nombre, precio, stock):
     conexion = conectar()
 
     conexion.execute("""
         UPDATE productos
-        SET codigo = ?, 
-            nombre = ?, 
-            precio = ?, 
-            stock = ?,
-            descripcion = ?
+        SET codigo = ?,
+            nombre = ?,
+            precio = ?,
+            stock = ?
         WHERE id = ?
-    """, (id, codigo, nombre, precio, stock, descripcion))
+    """, (codigo, nombre, precio, stock, id))
 
     conexion.commit()
     conexion.close()
 
-def eliminar_producto (id):
-    conexion = conectar()
-    cursor = conexion.cursor()
 
-    cursor.execute("""
+def eliminar_producto(id):
+    conexion = conectar()
+
+    conexion.execute("""
         DELETE FROM productos
         WHERE id = ?
     """, (id,))

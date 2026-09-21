@@ -1,5 +1,6 @@
 from base_datos.conection import conectar
 
+
 def crear_proveedor(nombre, telefono, email):
     conexion = conectar()
 
@@ -11,11 +12,12 @@ def crear_proveedor(nombre, telefono, email):
     conexion.commit()
     conexion.close()
 
+
 def obtener_proveedores():
     conexion = conectar()
     cursor = conexion.cursor()
 
-    conexion.execute("SELECT * FROM proveedores")
+    cursor.execute("SELECT * FROM proveedores")
 
     proveedores = cursor.fetchall()
 
@@ -23,11 +25,12 @@ def obtener_proveedores():
 
     return proveedores
 
+
 def obtener_proveedor_por_id(id_proveedor):
     conexion = conectar()
     cursor = conexion.cursor()
 
-    conexion.execute("""
+    cursor.execute("""
         SELECT *
         FROM proveedores
         WHERE id = ?
@@ -39,16 +42,21 @@ def obtener_proveedor_por_id(id_proveedor):
 
     return proveedor
 
+
 def actualizar_proveedor(id, nombre, telefono, email):
     conexion = conectar()
 
     conexion.execute("""
         UPDATE proveedores
-        SET nombre = ?, 
-            telefono = ?, 
+        SET nombre = ?,
+            telefono = ?,
             email = ?
         WHERE id = ?
     """, (nombre, telefono, email, id))
+
+    conexion.commit()
+    conexion.close()
+
 
 def eliminar_proveedor(id):
     conexion = conectar()
@@ -61,11 +69,12 @@ def eliminar_proveedor(id):
     conexion.commit()
     conexion.close()
 
+
 def obtener_proveedor_por_nombre(nombre):
     conexion = conectar()
     cursor = conexion.cursor()
 
-    conexion.execute("""
+    cursor.execute("""
         SELECT *
         FROM proveedores
         WHERE nombre = ?
