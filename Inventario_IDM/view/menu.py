@@ -19,6 +19,27 @@ class MenuView(ctk.CTkFrame):
         )
         self.label.pack(pady=20)
 
+        self.agregar_button = ctk.CTkButton(
+            self,
+            text="Agregar producto",
+            command=self.controller.mostrar_agregar_producto
+        )
+        self.agregar_button.pack(pady=10)
+
+        self.eliminar_button = ctk.CTkButton(
+            self,
+            text="Eliminar producto",
+            command=self.controller.mostrar_eliminar_producto
+        )
+        self.eliminar_button.pack(pady=10)
+
+        self.localizar_button = ctk.CTkButton(
+            self,
+            text="Localizar producto",
+            command=self.controller.mostrar_localizar_producto
+        )
+        self.localizar_button.pack(pady=10)
+
         self.salir_button = ctk.CTkButton(
             self,
             text="Salir",
