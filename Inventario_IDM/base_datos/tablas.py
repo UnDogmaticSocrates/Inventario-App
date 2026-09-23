@@ -6,7 +6,7 @@ def crear_tablas():
     cursor = conexion.cursor()
 
     cursor.executescript("""
-        CREATE TABLE IF NOT EXISTS productos (
+        CREATE TABLE IF NOT EXISTS productos(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             codigo TEXT UNIQUE, 
             nombre TEXT NOT NULL,
