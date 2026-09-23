@@ -11,7 +11,7 @@ def crear_tablas():
             codigo TEXT UNIQUE, 
             nombre TEXT NOT NULL,
             precio REAL NOT NULL, 
-            stock INTEGER DEFAULT 0
+            stock INTEGER DEFAULT 0,
             ubicacion TEXT
         );
 

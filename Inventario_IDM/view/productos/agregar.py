@@ -49,6 +49,12 @@ class AgregarProductoView(ctk.CTkFrame):
         )
         self.stock_entry.pack(pady=5)
 
+        self.ubicacion_entry = ctk.CTkEntry(
+            self,
+            placeholder_text="Ubicación (ej: B1C3)"
+        )
+        self.ubicacion_entry.pack(pady=5)
+
         self.agregar_button = ctk.CTkButton(
             self,
             text="Agregar producto",
@@ -69,10 +75,12 @@ class AgregarProductoView(ctk.CTkFrame):
         nombre = self.nombre_entry.get()
         precio = self.precio_entry.get()
         stock = self.stock_entry.get()
+        ubicacion = self.ubicacion_entry.get()
 
         self.productos_controller.crear_producto(
             codigo,
             nombre,
             precio,
-            stock
+            stock,
+            ubicacion
         )

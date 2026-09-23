@@ -2,12 +2,13 @@ import dao.productos_dao
 
 class ProductosController:
 
-    def crear_producto(self, codigo, nombre, precio, stock):
+    def crear_producto(self, codigo, nombre, precio, stock, ubicacion):
         return dao.productos_dao.crear_producto(
             codigo,
             nombre,
             precio,
-            stock
+            stock,
+            ubicacion
         )
 
     def obtener_productos(self):
