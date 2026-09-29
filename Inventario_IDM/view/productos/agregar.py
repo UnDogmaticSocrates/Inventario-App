@@ -77,10 +77,14 @@ class AgregarProductoView(ctk.CTkFrame):
         stock = self.stock_entry.get()
         ubicacion = self.ubicacion_entry.get()
 
-        self.productos_controller.crear_producto(
+        resultado = self.productos_controller.crear_producto(
             codigo,
             nombre,
             precio,
             stock,
             ubicacion
         )
+
+        if resultado:
+            print("Producto agregado exitosamente")
+        

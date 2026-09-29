@@ -12,6 +12,8 @@ def crear_producto(codigo, nombre, precio, stock, ubicacion):
     conexion.commit()
     conexion.close()
 
+    return True
+
 
 def obtener_productos():
     conexion = conectar()
