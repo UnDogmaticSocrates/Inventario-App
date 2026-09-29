@@ -26,6 +26,18 @@ class MenuView(ctk.CTkFrame):
         )
         self.agregar_button.pack(pady=10)
 
+        self.agregar_button_unidades = ctk.CTkButton(
+            self,
+            text="Configurar Unidades",
+            command=self.controller.mostrar_unidades
+        )
+        self.agregar_button_unidades.pack(pady=10)
+
+        unidades= self.unidades_controller.obtener_unidades()
+
+        print (unidades)
+    
+
         self.eliminar_button = ctk.CTkButton(
             self,
             text="Eliminar producto",

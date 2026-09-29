@@ -1,16 +1,33 @@
 from view.menu import MenuView
 from view.productos.agregar import AgregarProductoView
 from controles.control_productos import ProductosController
-
+from view.unidades import UnidadesView
+from controles.control_unidades import UnidadesController
 
 class NavegacionController:
 
     def __init__(self, root):
+        self.unidades_controller = UnidadesController()
         self.root = root
         self.vista_actual = None
 
         self.productos_controller = ProductosController()
         self.mostrar_menu()
+
+    def mostrar_unidades(self):
+
+        self.limpiar_vista()
+
+        self.vista_actual = UnidadesView(
+            self.root,
+            self.unidades_controller,
+            self
+        )
+
+        self.vista_actual.pack(
+            fill="both",
+            expand=True
+        )
 
     def limpiar_vista(self):
 
