@@ -77,6 +77,10 @@ class AgregarProductoView(ctk.CTkFrame):
         stock = self.stock_entry.get()
         ubicacion = self.ubicacion_entry.get()
 
+        if not codigo or not nombre or not precio or not stock:
+            print("Faltan campos obligatorios")
+            return
+
         resultado = self.productos_controller.crear_producto(
             codigo,
             nombre,
@@ -86,5 +90,10 @@ class AgregarProductoView(ctk.CTkFrame):
         )
 
         if resultado:
-            print("Producto agregado exitosamente")
+
+            self.codigo_entry.delete(0, "end")
+            self.nombre_entry.delete(0, "end")
+            self.precio_entry.delete(0, "end")
+            self.stock_entry.delete(0, "end")
+            self.ubicacion_entry.delete(0, "end")
         
