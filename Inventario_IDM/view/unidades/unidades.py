@@ -78,6 +78,8 @@ class UnidadesView(ctk.CTkFrame):
 
             self.nombre_entry.delete(0, "end")
 
+            self.mostrar_unidades()
+
             print("Unidad agregada correctamente")
 
     def mostrar_unidades(self):

@@ -24,7 +24,7 @@ def obtener_unidades():
     cursor.execute("""
         SELECT id, nombre
         FROM unidades
-        ORDER BY nombre
+        ORDER BY id
     """)
 
     unidades = cursor.fetchall()
