@@ -49,6 +49,21 @@ class UnidadesView(ctk.CTkFrame):
         )
         self.regresar_button.pack(pady=10)
 
+        self.lista_unidades = ctk.CTkScrollableFrame(
+            self,
+            width=400,
+            height=250
+        )
+
+        self.lista_unidades.pack(
+            pady=20,
+            padx=20,
+            fill="both",
+            expand=True
+        )
+
+        self.mostrar_unidades()
+
     def agregar_unidad(self):
 
         nombre = self.nombre_entry.get()
@@ -64,3 +79,19 @@ class UnidadesView(ctk.CTkFrame):
             self.nombre_entry.delete(0, "end")
 
             print("Unidad agregada correctamente")
+
+    def mostrar_unidades(self):
+
+        for widget in self.lista_unidades.winfo_children():
+            widget.destroy()
+
+        unidades = self.unidades_controller.obtener_unidades()
+
+        for unidad in unidades:
+
+            label = ctk.CTkLabel(
+                self.lista_unidades,
+                text=f"{unidad[0]}: {unidad[1]}"
+            )
+
+            label.pack(pady=5)

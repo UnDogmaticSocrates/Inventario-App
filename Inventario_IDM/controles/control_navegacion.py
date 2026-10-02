@@ -1,7 +1,7 @@
 from view.menu import MenuView
 from view.productos.agregar import AgregarProductoView
 from controles.control_productos import ProductosController
-from view.unidades import UnidadesView
+from view.unidades.unidades import UnidadesView
 from controles.control_unidades import UnidadesController
 
 class NavegacionController:
