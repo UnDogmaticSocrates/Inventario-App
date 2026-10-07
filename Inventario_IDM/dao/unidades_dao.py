@@ -6,6 +6,29 @@ from base_datos.conection import conectar
 def crear_unidad(nombre):
 
     conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        SELECT id, activa
+        FROM unidades
+        WHERE nombre = ?
+    """, (nombre,))
+
+    unidad = cursor.fetchone()
+
+    if unidad:
+        id_unidad = unidad[0]
+        activa = unidad[1]
+
+        if activa == 0:
+
+            return{
+                "estado": "desactivada",
+                "id": id_unidad
+            }
+        return{
+            "estado": "existe"
+        }
 
     conexion.execute("""
         INSERT INTO unidades (nombre)
@@ -15,7 +38,9 @@ def crear_unidad(nombre):
     conexion.commit()
     conexion.close()
 
-    return True
+    return {
+        "estado": "creada",
+    }
 
 def obtener_unidades():
 
@@ -67,6 +92,21 @@ def desactivar_unidad(id_unidad):
     conexion.execute("""
         UPDATE unidades
         SET activa = 0
+        WHERE id = ?
+    """, (id_unidad,))
+
+    conexion.commit()
+    conexion.close()
+
+    return True
+
+def activar_unidad(id_unidad):
+
+    conexion = conectar()
+
+    conexion.execute("""
+        UPDATE unidades
+        SET activa = 1
         WHERE id = ?
     """, (id_unidad,))
 

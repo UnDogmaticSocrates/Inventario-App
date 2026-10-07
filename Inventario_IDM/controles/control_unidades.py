@@ -19,4 +19,29 @@ class UnidadesController:
         )
 
     def desactivar_unidad(self, id_unidad):
-        return unidades_dao.desactivar_unidad(id_unidad)
+
+        return unidades_dao.desactivar_unidad(
+            id_unidad
+        )
+
+    def activar_unidad(self, id_unidad):
+
+        return unidades_dao.activar_unidad(
+            id_unidad
+        )
+
+if __name__ == "__main__":
+
+    controller = UnidadesController()
+
+    resultado = controller.crear_unidad("kg")
+
+    print(resultado)
+    
+    resultado = controller.crear_unidad("lt")
+
+    print(resultado)
+
+    resultado = controller.crear_unidad("toneladas")
+
+    print(resultado)

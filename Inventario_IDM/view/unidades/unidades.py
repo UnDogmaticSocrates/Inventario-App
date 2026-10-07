@@ -119,6 +119,18 @@ class UnidadesView(ctk.CTkFrame):
                 padx=10
             )
 
+            desactivar_button = ctk.CTkButton(
+                fila,
+                text="Eliminar",
+                command=lambda id_unidad=unidad[0]: self.desactivar_unidad(id_unidad)
+            )
+
+            desactivar_button.pack(
+                side="right",
+                padx=10
+            )
+
+        
     def editar_unidad(self, id_unidad):
 
         for widget in self.lista_unidades.winfo_children():
@@ -215,3 +227,19 @@ class UnidadesView(ctk.CTkFrame):
         else:
 
             print("Ya existe una unidad con ese nombre")
+
+    def desactivar_unidad(self, id_unidad):
+
+        resultado = self.unidades_controller.desactivar_unidad(
+            id_unidad
+        )
+
+        if resultado:
+
+            self.mostrar_unidades()
+
+            print("Unidad desactivada correctamente")
+
+        else:
+
+            print("Error al desactivar la unidad")
