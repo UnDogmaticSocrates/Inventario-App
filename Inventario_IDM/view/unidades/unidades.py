@@ -91,9 +91,127 @@ class UnidadesView(ctk.CTkFrame):
 
         for unidad in unidades:
 
-            label = ctk.CTkLabel(
-                self.lista_unidades,
-                text=f"{unidad[0]}: {unidad[1]}"
+            fila = ctk.CTkFrame(self.lista_unidades)
+            fila.pack(
+                fill="x",
+                pady=5, 
+                padx=5
             )
 
-            label.pack(pady=5)
+            label= ctk.CTkLabel(
+                fila,
+                text= f"{unidad[0]}: {unidad[1]}"
+            )
+
+            label.pack(
+                side="left", 
+                padx=10
+            )
+
+            editar_button = ctk.CTkButton(
+                fila,
+                text="Editar",
+                command=lambda id_unidad=unidad[0]: self.editar_unidad(id_unidad)
+            )
+
+            editar_button.pack(
+                side="right",
+                padx=10
+            )
+
+    def editar_unidad(self, id_unidad):
+
+        for widget in self.lista_unidades.winfo_children():
+            widget.destroy()
+
+        unidades = self.unidades_controller.obtener_unidades()
+
+        for unidad in unidades:
+
+            fila = ctk.CTkFrame(
+                self.lista_unidades
+            )
+
+            fila.pack(
+                fill="x",
+                pady=5,
+                padx=5
+            )
+
+            if unidad[0] == id_unidad:
+
+                entrada = ctk.CTkEntry(
+                    fila
+                )
+
+                entrada.insert(
+                    0,
+                    unidad[1]
+                )
+
+                entrada.pack(
+                    side="left",
+                    padx=10
+                )
+
+                guardar_button = ctk.CTkButton(
+                    fila,
+                    text="Guardar",
+                    command=lambda: self.guardar_edicion(
+                        id_unidad,
+                        entrada
+                    )
+                )
+
+                guardar_button.pack(
+                    side="right",
+                    padx=10
+                )
+
+            else:
+
+                label = ctk.CTkLabel(
+                    fila,
+                    text=f"{unidad[0]}: {unidad[1]}"
+                )
+
+                label.pack(
+                    side="left",
+                    padx=10
+                )
+
+                editar_button = ctk.CTkButton(
+                    fila,
+                    text="Editar",
+                    command=lambda id_unidad=unidad[0]: self.editar_unidad(
+                        id_unidad
+                    )
+                )
+
+                editar_button.pack(
+                    side="right",
+                    padx=10
+                )
+
+    def guardar_edicion(self, id_unidad, entrada):
+
+        nombre = entrada.get()
+
+        if not nombre:
+            print("El nombre de la unidad es obligatorio")
+            return
+
+        resultado = self.unidades_controller.actualizar_unidad(
+            id_unidad,
+            nombre
+        )
+
+        if resultado:
+
+            self.mostrar_unidades()
+
+            print("Unidad actualizada correctamente")
+
+        else:
+
+            print("Ya existe una unidad con ese nombre")

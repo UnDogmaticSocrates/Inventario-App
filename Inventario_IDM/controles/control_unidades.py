@@ -17,9 +17,3 @@ class UnidadesController:
             id_unidad,
             nombre
         )
-
-
-if __name__ == "__main__":
-    controller = UnidadesController()
-    resultado= controller.actualizar_unidad(1, "Unidad actualizada")
-    print(resultado)
