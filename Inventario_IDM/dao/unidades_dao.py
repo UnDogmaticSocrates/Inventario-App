@@ -59,3 +59,18 @@ def actualizar_unidad(id_unidad, nombre):
     finally:
 
         conexion.close()
+
+def desactivar_unidad(id_unidad):
+
+    conexion = conectar()
+
+    conexion.execute("""
+        UPDATE unidades
+        SET activa = 0
+        WHERE id = ?
+    """, (id_unidad,))
+
+    conexion.commit()
+    conexion.close()
+
+    return True

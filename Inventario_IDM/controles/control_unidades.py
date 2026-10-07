@@ -17,3 +17,6 @@ class UnidadesController:
             id_unidad,
             nombre
         )
+
+    def desactivar_unidad(self, id_unidad):
+        return unidades_dao.desactivar_unidad(id_unidad)
