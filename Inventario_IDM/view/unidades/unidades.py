@@ -89,7 +89,7 @@ class UnidadesView(ctk.CTkFrame):
 
         unidades = self.unidades_controller.obtener_unidades()
 
-        for unidad in unidades:
+        for numero_visual, unidad in enumerate(unidades, start=1):
 
             fila = ctk.CTkFrame(self.lista_unidades)
             fila.pack(
@@ -100,7 +100,7 @@ class UnidadesView(ctk.CTkFrame):
 
             label= ctk.CTkLabel(
                 fila,
-                text= f"{unidad[0]}: {unidad[1]}"
+                text= f"{numero_visual}: {unidad[1]}"
             )
 
             label.pack(

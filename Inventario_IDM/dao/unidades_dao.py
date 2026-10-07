@@ -26,6 +26,7 @@ def obtener_unidades():
     cursor.execute("""
         SELECT id, nombre
         FROM unidades
+        WHERE activa = 1
         ORDER BY id
     """)
 

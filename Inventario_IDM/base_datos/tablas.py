@@ -9,8 +9,10 @@ def crear_tablas():
     cursor.executescript("""
         CREATE TABLE IF NOT EXISTS unidades(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL UNIQUE
+            nombre TEXT NOT NULL UNIQUE,
+            activa INTEGER NOT NULL DEFAULT 1
         );
+        
         CREATE TABLE IF NOT EXISTS productos(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             codigo TEXT UNIQUE, 
