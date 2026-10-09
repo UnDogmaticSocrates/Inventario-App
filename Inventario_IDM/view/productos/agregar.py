@@ -57,7 +57,7 @@ class AgregarProductoView(ctk.CTkFrame):
             for id_unidad, nombre in unidades
         }
 
-        self.unidad_selector = ctk.cTKComboBox(
+        self.unidad_selector = ctk.CTkComboBox(
             self,
             values=list(self.unidades_disponibles.keys()),
             state="readonly"
