@@ -66,21 +66,45 @@ class UnidadesView(ctk.CTkFrame):
 
     def agregar_unidad(self):
 
-        nombre = self.nombre_entry.get()
+        nombre = self.nombre_entry.get().strip()
 
         if not nombre:
-            print("El nombre de la unidad es obligatorio")
+            self.mostrar_mensaje(
+                "Campo obligatorio",
+                "Escribe el nombre de la unidad"
+            )
             return
 
         resultado = self.unidades_controller.crear_unidad(nombre)
 
-        if resultado:
+        estado = resultado["estado"]
+
+        if estado == "creada":
 
             self.nombre_entry.delete(0, "end")
 
             self.mostrar_unidades()
 
-            print("Unidad agregada correctamente")
+            self.mostrar_mensaje(
+                "Unidad agregada",
+                f"La unidad '{nombre}' ha sido agregada correctamente"
+            )
+
+
+        elif estado == "existe":
+
+            self.mostrar_mensaje(
+                "Unidad duplicada",
+                f"Ya existe una unidad con el nombre '{nombre}'"
+            )
+
+        elif estado == "desactivada":
+
+            id_unidad = resultado["id"]
+
+            self.confirmar_reactivacion(id_unidad, nombre)
+
+            
 
     def mostrar_unidades(self):
 
@@ -243,3 +267,83 @@ class UnidadesView(ctk.CTkFrame):
         else:
 
             print("Error al desactivar la unidad")
+
+
+    
+    def confirmar_reactivacion(self, id_unidad, nombre):
+
+        ventana = ctk.CTkToplevel(self)
+
+        ventana.title("Reactivar unidad")
+        ventana.geometry("350x160")
+        ventana.resizable(False, False)
+
+        # Mantener la ventana al frente
+        ventana.transient(self.winfo_toplevel())
+        ventana.grab_set()
+
+        mensaje = ctk.CTkLabel(
+            ventana,
+            text=f"La unidad '{nombre}' está desactivada.\n¿Deseas reactivarla?"
+        )
+        mensaje.pack(pady=20)
+
+        botones = ctk.CTkFrame(ventana, fg_color="transparent")
+        botones.pack(pady=10)
+
+        def reactivar():
+
+            resultado = self.unidades_controller.activar_unidad(
+                id_unidad
+            )
+
+            if resultado:
+                self.nombre_entry.delete(0, "end")
+                self.mostrar_unidades()
+                print("Unidad reactivada correctamente")
+
+            ventana.destroy()
+
+        def cancelar():
+            ventana.destroy()
+
+        boton_si = ctk.CTkButton(
+            botones,
+            text="Sí, reactivar",
+            command=reactivar
+        )
+        boton_si.pack(side="left", padx=10)
+
+        boton_no = ctk.CTkButton(
+            botones,
+            text="No, cancelar",
+            command=cancelar
+        )
+        boton_no.pack(side="left", padx=10)
+
+
+    
+    def mostrar_mensaje(self, titulo, mensaje):
+
+        ventana = ctk.CTkToplevel(self)
+
+        ventana.title(titulo)
+        ventana.geometry("350x160")
+        ventana.resizable(False, False)
+
+        ventana.transient(self.winfo_toplevel())
+        ventana.grab_set()
+
+        etiqueta = ctk.CTkLabel(
+            ventana,
+            text=mensaje,
+            wraplength=300
+        )
+        etiqueta.pack(pady=25, padx=15)
+
+        boton_aceptar = ctk.CTkButton(
+            ventana,
+            text="Aceptar",
+            command=ventana.destroy
+        )
+        boton_aceptar.pack(pady=10)

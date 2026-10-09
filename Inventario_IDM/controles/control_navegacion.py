@@ -55,6 +55,7 @@ class NavegacionController:
         self.vista_actual = AgregarProductoView(
             self.root,
             self.productos_controller,
+            self.unidades_controller,
             self
         )
 

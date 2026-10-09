@@ -1,18 +1,39 @@
 from base_datos.conection import conectar
 
 
-def crear_producto(codigo, nombre, precio, stock, ubicacion):
+def crear_producto(codigo, nombre, precio, stock, unidad_id, ubicacion):
     conexion = conectar()
 
-    conexion.execute("""
-        INSERT INTO productos (codigo, nombre, precio, stock, ubicacion)
-        VALUES (?, ?, ?, ?, ?)
-    """, (codigo, nombre, precio, stock, ubicacion))
+    
+    try:
+        conexion.execute("""
+            INSERT INTO productos (
+            codigo, 
+            nombre, 
+            precio, 
+            stock, 
+            unidad_id, 
+            ubicacion
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            codigo, 
+            nombre, 
+            precio, 
+            stock, 
+            unidad_id, 
+            ubicacion
+        ))
 
-    conexion.commit()
-    conexion.close()
+        conexion.commit()
+        return True
 
-    return True
+    except Exception:
+        conexion.rollback()
+        raise
+
+    finally:
+        conexion.close()
 
 
 def obtener_productos():
