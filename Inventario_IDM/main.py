@@ -8,7 +8,8 @@ crear_tablas()
 app = ctk.CTk()
 
 app.title("Inventario")
-app.geometry("1000x700")
+app.geometry("1500x800")
+app.minsize(1000, 650)
 
 NavegacionController(app)
 
