@@ -49,4 +49,18 @@ def crear_tablas():
     """)
 
     conexion.commit()
+
+    #Migración de datos: agregar columna activo si no existe.
+
+    cursor.execute("PRAGMA table_info(productos)")
+    columnas = [columna[1] for columna in cursor.fetchall()]
+
+    if 'activo' not in columnas:
+        cursor.execute("""
+            ALTER TABLE productos
+            ADD COLUMN activo INTEGER NOT NULL DEFAULT 1
+        """)
+
+        conexion.commit()
+        
     conexion.close()

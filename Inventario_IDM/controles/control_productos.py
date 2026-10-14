@@ -1,8 +1,11 @@
 import dao.productos_dao
 
+
 class ProductosController:
 
-    def crear_producto(self, codigo, nombre, precio, stock, unidad_id, ubicacion):
+    def crear_producto(
+        self, codigo, nombre, precio, stock, unidad_id, ubicacion
+    ):
         return dao.productos_dao.crear_producto(
             codigo,
             nombre,
@@ -18,15 +21,22 @@ class ProductosController:
     def obtener_producto_por_id(self, id_producto):
         return dao.productos_dao.obtener_producto_por_id(id_producto)
 
-    def actualizar_producto(self, id, codigo, nombre, precio, stock, descripcion):
+    def actualizar_producto(
+        self, id_producto, codigo, nombre, precio,
+        stock, unidad_id, ubicacion
+    ):
         return dao.productos_dao.actualizar_producto(
-            id, 
+            id_producto,
             codigo,
             nombre,
             precio,
             stock,
-            descripcion 
+            unidad_id,
+            ubicacion
         )
 
-    def eliminar_producto(self, id):
-        return dao.productos_dao.eliminar_producto(id)
+    def desactivar_producto(self, id_producto):
+        return dao.productos_dao.desactivar_producto(id_producto)
+
+    def activar_producto(self, id_producto):
+        return dao.productos_dao.activar_producto(id_producto)

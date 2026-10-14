@@ -41,14 +41,15 @@ class NavegacionController:
         )
         self.vista_actual.pack(fill="both", expand=True)
 
-    def mostrar_agregar_producto(self):
+    def mostrar_agregar_producto(self, producto_id=None):
         self.limpiar_vista()
 
         self.vista_actual = AgregarProductoView(
             self.root,
             self.productos_controller,
             self.unidades_controller,
-            self
+            self,
+            producto_id=producto_id
         )
         self.vista_actual.pack(fill="both", expand=True)
 
