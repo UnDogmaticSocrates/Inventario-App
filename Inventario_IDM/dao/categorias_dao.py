@@ -1,69 +1,94 @@
+
 from base_datos.conection import conectar
 
 
 def crear_categoria(nombre, descripcion):
     conexion = conectar()
-
-    conexion.execute("""
-        INSERT INTO categorias (nombre, descripcion)
-        VALUES (?, ?)
-    """, (nombre, descripcion))
-
-    conexion.commit()
-    conexion.close()
+    try:
+        conexion.execute("""
+            INSERT INTO categorias (nombre, descripcion)
+            VALUES (?, ?)
+        """, (nombre, descripcion))
+        conexion.commit()
+        return True
+    except Exception:
+        conexion.rollback()
+        raise
+    finally:
+        conexion.close()
 
 
 def obtener_categorias():
     conexion = conectar()
-    cursor = conexion.cursor()
-
-    cursor.execute("SELECT * FROM categorias")
-
-    categorias = cursor.fetchall()
-
-    conexion.close()
-
-    return categorias
+    try:
+        cursor = conexion.execute("""
+            SELECT id, nombre, descripcion
+            FROM categorias
+            WHERE activo = 1
+            ORDER BY nombre COLLATE NOCASE
+        """)
+        return cursor.fetchall()
+    finally:
+        conexion.close()
 
 
 def obtener_categoria_por_id(id_categoria):
     conexion = conectar()
-    cursor = conexion.cursor()
-
-    cursor.execute("""
-        SELECT *
-        FROM categorias
-        WHERE id = ?
-    """, (id_categoria,))
-
-    categoria = cursor.fetchone()
-
-    conexion.close()
-
-    return categoria
+    try:
+        cursor = conexion.execute("""
+            SELECT id, nombre, descripcion, activo
+            FROM categorias
+            WHERE id = ?
+        """, (id_categoria,))
+        return cursor.fetchone()
+    finally:
+        conexion.close()
 
 
-def actualizar_categoria(id, nombre, descripcion):
+def actualizar_categoria(id_categoria, nombre, descripcion):
     conexion = conectar()
+    try:
+        cursor = conexion.execute("""
+            UPDATE categorias
+            SET nombre = ?, descripcion = ?
+            WHERE id = ? AND activo = 1
+        """, (nombre, descripcion, id_categoria))
+        conexion.commit()
+        return cursor.rowcount > 0
+    except Exception:
+        conexion.rollback()
+        raise
+    finally:
+        conexion.close()
 
-    conexion.execute("""
-        UPDATE categorias
-        SET nombre = ?,
-            descripcion = ?
-        WHERE id = ?
-    """, (nombre, descripcion, id))
 
-    conexion.commit()
-    conexion.close()
-
-
-def eliminar_categoria(id):
+def desactivar_categoria(id_categoria):
     conexion = conectar()
+    try:
+        cursor = conexion.execute("""
+            UPDATE categorias
+            SET activo = 0
+            WHERE id = ? AND activo = 1
+        """, (id_categoria,))
+        conexion.commit()
+        return cursor.rowcount > 0
+    except Exception:
+        conexion.rollback()
+        raise
 
-    conexion.execute("""
-        DELETE FROM categorias
-        WHERE id = ?
-    """, (id,))
 
-    conexion.commit()
-    conexion.close()
+def activar_categoria(id_categoria):
+    conexion = conectar()
+    try:
+        cursor = conexion.execute("""
+            UPDATE categorias
+            SET activo = 1
+            WHERE id = ? AND activo = 0
+        """, (id_categoria,))
+        conexion.commit()
+        return cursor.rowcount > 0
+    except Exception:
+        conexion.rollback()
+        raise
+    finally:
+        conexion.close()

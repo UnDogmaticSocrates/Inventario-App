@@ -7,6 +7,9 @@ from view.unidades.unidades import UnidadesView
 from controles.control_productos import ProductosController
 from controles.control_unidades import UnidadesController
 
+from view.categorias.catalogo import CategoriasView
+from controles.control_categorias import CategoriasController
+
 
 class NavegacionController:
 
@@ -16,6 +19,7 @@ class NavegacionController:
 
         self.productos_controller = ProductosController()
         self.unidades_controller = UnidadesController()
+        self.categorias_controller = CategoriasController()
 
         self.mostrar_menu()
 
@@ -59,6 +63,16 @@ class NavegacionController:
         self.vista_actual = UnidadesView(
             self.root,
             self.unidades_controller,
+            self
+        )
+        self.vista_actual.pack(fill="both", expand=True)
+
+    def mostrar_categorias(self):
+        self.limpiar_vista()
+
+        self.vista_actual = CategoriasView(
+            self.root,
+            self.categorias_controller,
             self
         )
         self.vista_actual.pack(fill="both", expand=True)

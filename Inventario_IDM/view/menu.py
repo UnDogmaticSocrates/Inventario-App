@@ -106,7 +106,7 @@ class MenuView(ctk.CTkFrame):
             ("📥", "Entradas", None),
             ("📤", "Salidas", None),
             ("📅", "Caducidad", None),
-            ("🗂", "Categorías", None),
+            ("🗂", "Categorías", "mostrar_categorias"),
             ("⚖", "Unidades", "mostrar_unidades"),
             ("📊", "Reportes", None),
         ]

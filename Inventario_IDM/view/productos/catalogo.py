@@ -1,3 +1,4 @@
+
 import customtkinter as ctk
 from tkinter import ttk, messagebox
 
@@ -92,7 +93,8 @@ class CatalogoProductosView(ctk.CTkFrame):
         self.tabla = ttk.Treeview(
             tabla_frame,
             columns=columnas,
-            show="headings"
+            show="headings",
+            selectmode="browse"
         )
 
         encabezados = {
@@ -133,16 +135,37 @@ class CatalogoProductosView(ctk.CTkFrame):
         self.tabla.grid(row=0, column=0, sticky="nsew")
         scroll.grid(row=0, column=1, sticky="ns")
 
+        # Acciones sobre el producto seleccionado
+        acciones = ctk.CTkFrame(self, fg_color="transparent")
+        acciones.grid(
+            row=3, column=0, sticky="ew",
+            padx=30, pady=(5, 5)
+        )
+
+        ctk.CTkButton(
+            acciones,
+            text="Editar producto",
+            command=self.editar_producto
+        ).pack(side="left", padx=(0, 10))
+
+        ctk.CTkButton(
+            acciones,
+            text="Desactivar producto",
+            fg_color="#A83232",
+            hover_color="#812525",
+            command=self.desactivar_producto
+        ).pack(side="left")
+
         # Pie
         pie = ctk.CTkFrame(self, fg_color="transparent")
         pie.grid(
-            row=3, column=0, sticky="ew",
+            row=4, column=0, sticky="ew",
             padx=30, pady=(5, 20)
         )
         pie.grid_columnconfigure(0, weight=1)
 
         self.total_label = ctk.CTkLabel(
-            pie, text="Productos: 0"
+            pie, text="Productos mostrados: 0"
         )
         self.total_label.grid(row=0, column=0, sticky="w")
 
@@ -183,10 +206,10 @@ class CatalogoProductosView(ctk.CTkFrame):
         total = 0
 
         for producto in self.productos:
-            # Orden esperado del esquema actual:
             # id, codigo, nombre, precio, stock,
-            # unidad_id, ubicacion, categoria_id, proveedor_id
-            if len(producto) < 7:
+            # unidad_id, ubicacion, categoria_id,
+            # proveedor_id, activo
+            if len(producto) < 10:
                 continue
 
             id_producto = producto[0]
@@ -197,8 +220,10 @@ class CatalogoProductosView(ctk.CTkFrame):
             unidad_id = producto[5]
             ubicacion = producto[6] or ""
 
-            if texto not in str(codigo).lower() and \
-               texto not in str(nombre).lower():
+            if (
+                texto not in str(codigo).lower()
+                and texto not in str(nombre).lower()
+            ):
                 continue
 
             nombre_unidad = self.unidades.get(
@@ -224,5 +249,75 @@ class CatalogoProductosView(ctk.CTkFrame):
         self.total_label.configure(
             text=f"Productos mostrados: {total}"
         )
+
+    def obtener_id_seleccionado(self):
+        seleccion = self.tabla.selection()
+
+        if not seleccion:
+            messagebox.showwarning(
+                "Selecciona un producto",
+                "Primero selecciona un producto de la tabla.",
+                parent=self
+            )
+            return None
+
+        return int(seleccion[0])
+
+    def editar_producto(self):
+        id_producto = self.obtener_id_seleccionado()
+
+        if id_producto is None:
+            return
+
+        self.navegacion_controller.mostrar_agregar_producto(
+            producto_id=id_producto
+        )
+
+    def desactivar_producto(self):
+        id_producto = self.obtener_id_seleccionado()
+
+        if id_producto is None:
+            return
+
+        confirmar = messagebox.askyesno(
+            "Confirmar desactivación",
+            "El producto dejará de aparecer en el catálogo activo.\n"
+            "El registro se conservará en la base de datos.\n\n"
+            "¿Deseas continuar?",
+            parent=self
+        )
+
+        if not confirmar:
+            return
+
+        try:
+            resultado = (
+                self.productos_controller.desactivar_producto(
+                    id_producto
+                )
+            )
+
+            if resultado:
+                messagebox.showinfo(
+                    "Producto desactivado",
+                    "El producto se desactivó correctamente.",
+                    parent=self
+                )
+                self.cargar_productos()
+            else:
+                messagebox.showwarning(
+                    "Sin cambios",
+                    "El producto ya no está activo o no existe.",
+                    parent=self
+                )
+                self.cargar_productos()
+
+        except Exception as error:
+            messagebox.showerror(
+                "Error",
+                f"No fue posible desactivar el producto.\n\n{error}",
+                parent=self
+            )
+
 
         

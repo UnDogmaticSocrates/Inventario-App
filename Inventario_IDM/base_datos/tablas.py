@@ -62,5 +62,20 @@ def crear_tablas():
         """)
 
         conexion.commit()
+
+    
+    # Migración: agregar estado activo/inactivo a categorías
+    cursor.execute("PRAGMA table_info(categorias)")
+    columnas_categorias = [
+        columna[1] for columna in cursor.fetchall()
+    ]
+
+    if "activo" not in columnas_categorias:
+        cursor.execute("""
+            ALTER TABLE categorias
+            ADD COLUMN activo INTEGER NOT NULL DEFAULT 1
+        """)
+        conexion.commit()
+
         
     conexion.close()
