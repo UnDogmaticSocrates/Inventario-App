@@ -1,21 +1,26 @@
 
-import sqlite3
 from base_datos.conection import conectar
 
 
-def crear_producto(codigo, nombre, precio, stock, unidad_id, ubicacion):
+def crear_producto(
+    codigo, nombre, precio, unidad_id, ubicacion, categoria_id
+):
     conexion = conectar()
 
     try:
         conexion.execute("""
             INSERT INTO productos (
                 codigo, nombre, precio, stock,
-                unidad_id, ubicacion
+                unidad_id, ubicacion, categoria_id
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, 0, ?, ?, ?)
         """, (
-            codigo, nombre, precio, stock,
-            unidad_id, ubicacion
+            codigo,
+            nombre,
+            precio,
+            unidad_id,
+            ubicacion,
+            categoria_id
         ))
 
         conexion.commit()
@@ -33,8 +38,7 @@ def obtener_productos():
     conexion = conectar()
 
     try:
-        cursor = conexion.cursor()
-        cursor.execute("""
+        cursor = conexion.execute("""
             SELECT
                 id, codigo, nombre, precio, stock,
                 unidad_id, ubicacion, categoria_id,
@@ -53,8 +57,7 @@ def obtener_producto_por_id(id_producto):
     conexion = conectar()
 
     try:
-        cursor = conexion.cursor()
-        cursor.execute("""
+        cursor = conexion.execute("""
             SELECT *
             FROM productos
             WHERE id = ?
@@ -67,7 +70,7 @@ def obtener_producto_por_id(id_producto):
 
 def actualizar_producto(
     id_producto, codigo, nombre, precio,
-    stock, unidad_id, ubicacion
+    unidad_id, ubicacion, categoria_id
 ):
     conexion = conectar()
 
@@ -77,14 +80,19 @@ def actualizar_producto(
             SET codigo = ?,
                 nombre = ?,
                 precio = ?,
-                stock = ?,
                 unidad_id = ?,
-                ubicacion = ?
+                ubicacion = ?,
+                categoria_id = ?
             WHERE id = ?
               AND activo = 1
         """, (
-            codigo, nombre, precio, stock,
-            unidad_id, ubicacion, id_producto
+            codigo,
+            nombre,
+            precio,
+            unidad_id,
+            ubicacion,
+            categoria_id,
+            id_producto
         ))
 
         conexion.commit()
@@ -137,5 +145,9 @@ def activar_producto(id_producto):
     except Exception:
         conexion.rollback()
         raise
+
+    finally:
+        conexion.close()
+
 
 

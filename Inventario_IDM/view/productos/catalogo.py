@@ -10,16 +10,19 @@ class CatalogoProductosView(ctk.CTkFrame):
         master,
         productos_controller,
         unidades_controller,
+        categorias_controller,
         navegacion_controller
     ):
         super().__init__(master)
 
         self.productos_controller = productos_controller
         self.unidades_controller = unidades_controller
+        self.categorias_controller = categorias_controller
         self.navegacion_controller = navegacion_controller
 
         self.productos = []
         self.unidades = {}
+        self.categorias = {}
 
         self.crear_interfaz()
         self.cargar_productos()
@@ -60,7 +63,7 @@ class CatalogoProductosView(ctk.CTkFrame):
 
         self.busqueda_entry = ctk.CTkEntry(
             barra_busqueda,
-            placeholder_text="Buscar por código o nombre..."
+            placeholder_text="Buscar por código, nombre o categoría..."
         )
         self.busqueda_entry.grid(
             row=0, column=0, sticky="ew", padx=(0, 10)
@@ -86,7 +89,7 @@ class CatalogoProductosView(ctk.CTkFrame):
         tabla_frame.grid_rowconfigure(0, weight=1)
 
         columnas = (
-            "codigo", "nombre", "precio",
+            "codigo", "nombre", "categoria", "precio",
             "stock", "unidad", "ubicacion"
         )
 
@@ -100,6 +103,7 @@ class CatalogoProductosView(ctk.CTkFrame):
         encabezados = {
             "codigo": "Código",
             "nombre": "Producto",
+            "categoria": "Categoría",
             "precio": "Precio",
             "stock": "Existencia",
             "unidad": "Unidad",
@@ -107,12 +111,13 @@ class CatalogoProductosView(ctk.CTkFrame):
         }
 
         anchos = {
-            "codigo": 120,
-            "nombre": 250,
-            "precio": 100,
-            "stock": 100,
+            "codigo": 110,
+            "nombre": 190,
+            "categoria": 150,
+            "precio": 90,
+            "stock": 90,
             "unidad": 100,
-            "ubicacion": 160
+            "ubicacion": 130
         }
 
         for columna in columnas:
@@ -135,7 +140,7 @@ class CatalogoProductosView(ctk.CTkFrame):
         self.tabla.grid(row=0, column=0, sticky="nsew")
         scroll.grid(row=0, column=1, sticky="ns")
 
-        # Acciones sobre el producto seleccionado
+        # Acciones
         acciones = ctk.CTkFrame(self, fg_color="transparent")
         acciones.grid(
             row=3, column=0, sticky="ew",
@@ -188,6 +193,14 @@ class CatalogoProductosView(ctk.CTkFrame):
                 for id_unidad, nombre in unidades
             }
 
+            categorias = (
+                self.categorias_controller.obtener_categorias()
+            )
+            self.categorias = {
+                id_categoria: nombre
+                for id_categoria, nombre, descripcion in categorias
+            }
+
             self.filtrar_productos()
 
         except Exception as error:
@@ -219,16 +232,19 @@ class CatalogoProductosView(ctk.CTkFrame):
             stock = producto[4]
             unidad_id = producto[5]
             ubicacion = producto[6] or ""
-
-            if (
-                texto not in str(codigo).lower()
-                and texto not in str(nombre).lower()
-            ):
-                continue
+            categoria_id = producto[7]
 
             nombre_unidad = self.unidades.get(
                 unidad_id, "Sin unidad"
             )
+            nombre_categoria = self.categorias.get(
+                categoria_id, "Sin categoría"
+            )
+
+            if texto not in (
+                f"{codigo} {nombre} {nombre_categoria}".lower()
+            ):
+                continue
 
             self.tabla.insert(
                 "",
@@ -237,6 +253,7 @@ class CatalogoProductosView(ctk.CTkFrame):
                 values=(
                     codigo,
                     nombre,
+                    nombre_categoria,
                     precio,
                     stock,
                     nombre_unidad,
@@ -303,14 +320,15 @@ class CatalogoProductosView(ctk.CTkFrame):
                     "El producto se desactivó correctamente.",
                     parent=self
                 )
-                self.cargar_productos()
+
             else:
                 messagebox.showwarning(
                     "Sin cambios",
                     "El producto ya no está activo o no existe.",
                     parent=self
                 )
-                self.cargar_productos()
+
+            self.cargar_productos()
 
         except Exception as error:
             messagebox.showerror(
@@ -318,6 +336,7 @@ class CatalogoProductosView(ctk.CTkFrame):
                 f"No fue posible desactivar el producto.\n\n{error}",
                 parent=self
             )
+
 
 
         

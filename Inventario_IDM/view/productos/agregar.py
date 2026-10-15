@@ -10,6 +10,7 @@ class AgregarProductoView(ctk.CTkFrame):
         master,
         productos_controller,
         unidades_controller,
+        categorias_controller,
         navegacion_controller,
         producto_id=None
     ):
@@ -17,10 +18,12 @@ class AgregarProductoView(ctk.CTkFrame):
 
         self.productos_controller = productos_controller
         self.unidades_controller = unidades_controller
+        self.categorias_controller = categorias_controller
         self.navegacion_controller = navegacion_controller
         self.producto_id = producto_id
 
         self.unidades_disponibles = {}
+        self.categorias_disponibles = {}
 
         self.crear_interfaz()
 
@@ -38,29 +41,43 @@ class AgregarProductoView(ctk.CTkFrame):
         self.titulo.pack(pady=20)
 
         self.codigo_entry = ctk.CTkEntry(
-            self,
-            placeholder_text="Código de producto"
+            self, placeholder_text="Código de producto"
         )
         self.codigo_entry.pack(pady=5)
 
         self.nombre_entry = ctk.CTkEntry(
-            self,
-            placeholder_text="Nombre"
+            self, placeholder_text="Nombre"
         )
         self.nombre_entry.pack(pady=5)
 
-        self.precio_entry = ctk.CTkEntry(
+        # Categorías disponibles
+        categorias = self.categorias_controller.obtener_categorias()
+
+        self.categorias_disponibles = {
+            nombre: id_categoria
+            for id_categoria, nombre, descripcion in categorias
+        }
+
+        self.categoria_selector = ctk.CTkComboBox(
             self,
-            placeholder_text="Precio"
+            values=list(self.categorias_disponibles.keys()),
+            state="readonly"
+        )
+        self.categoria_selector.pack(pady=5)
+
+        if categorias:
+            self.categoria_selector.set(categorias[0][1])
+        else:
+            self.categoria_selector.set("Registra una categoría primero")
+            self.categoria_selector.configure(state="disabled")
+
+        # Precio
+        self.precio_entry = ctk.CTkEntry(
+            self, placeholder_text="Precio"
         )
         self.precio_entry.pack(pady=5)
 
-        self.stock_entry = ctk.CTkEntry(
-            self,
-            placeholder_text="Stock"
-        )
-        self.stock_entry.pack(pady=5)
-
+        # Unidades disponibles
         unidades = self.unidades_controller.obtener_unidades()
 
         self.unidades_disponibles = {
@@ -78,12 +95,11 @@ class AgregarProductoView(ctk.CTkFrame):
         if unidades:
             self.unidad_selector.set(unidades[0][1])
         else:
-            self.unidad_selector.set("No hay unidades disponibles")
+            self.unidad_selector.set("Registra una unidad primero")
             self.unidad_selector.configure(state="disabled")
 
         self.ubicacion_entry = ctk.CTkEntry(
-            self,
-            placeholder_text="Ubicación (ej. B1C3)"
+            self, placeholder_text="Ubicación (ej. B1C3)"
         )
         self.ubicacion_entry.pack(pady=5)
 
@@ -118,15 +134,18 @@ class AgregarProductoView(ctk.CTkFrame):
                 self.navegacion_controller.mostrar_productos()
                 return
 
-            # Orden del registro:
-            # id, codigo, nombre, precio, stock,
-            # unidad_id, ubicacion, categoria_id,
-            # proveedor_id, activo
+            # id, codigo, nombre, precio, stock, unidad_id,
+            # ubicacion, categoria_id, proveedor_id, activo
 
             self.codigo_entry.insert(0, producto[1] or "")
             self.nombre_entry.insert(0, producto[2] or "")
             self.precio_entry.insert(0, str(producto[3]))
-            self.stock_entry.insert(0, str(producto[4]))
+
+            categoria_id = producto[7]
+            for nombre, id_categoria in self.categorias_disponibles.items():
+                if id_categoria == categoria_id:
+                    self.categoria_selector.set(nombre)
+                    break
 
             unidad_id = producto[5]
             for nombre, id_unidad in self.unidades_disponibles.items():
@@ -148,47 +167,47 @@ class AgregarProductoView(ctk.CTkFrame):
         codigo = self.codigo_entry.get().strip()
         nombre = self.nombre_entry.get().strip()
         precio_texto = self.precio_entry.get().strip()
-        stock_texto = self.stock_entry.get().strip()
         ubicacion = self.ubicacion_entry.get().strip()
 
-        if not codigo or not nombre or not precio_texto or not stock_texto:
+        if not codigo or not nombre or not precio_texto:
             messagebox.showwarning(
                 "Campos obligatorios",
-                "Completa el código, nombre, precio y stock.",
+                "Completa el código, nombre y precio.",
                 parent=self
             )
             return
 
-        if not self.unidades_disponibles:
+        categoria_id = self.categorias_disponibles.get(
+            self.categoria_selector.get()
+        )
+        unidad_id = self.unidades_disponibles.get(
+            self.unidad_selector.get()
+        )
+
+        if categoria_id is None:
             messagebox.showwarning(
-                "Sin unidades",
-                "Primero registra una unidad en Configurar unidades.",
+                "Categoría inválida",
+                "Registra y selecciona una categoría válida.",
                 parent=self
             )
             return
-
-        nombre_unidad = self.unidad_selector.get()
-        unidad_id = self.unidades_disponibles.get(nombre_unidad)
 
         if unidad_id is None:
             messagebox.showwarning(
                 "Unidad inválida",
-                "Selecciona una unidad válida.",
+                "Registra y selecciona una unidad válida.",
                 parent=self
             )
             return
 
         try:
             precio = float(precio_texto)
-            stock = float(stock_texto)
-
-            if precio < 0 or stock < 0:
+            if precio < 0:
                 raise ValueError
-
         except ValueError:
             messagebox.showwarning(
-                "Valores inválidos",
-                "El precio y el stock deben ser números válidos y no negativos.",
+                "Precio inválido",
+                "El precio debe ser un número válido y no negativo.",
                 parent=self
             )
             return
@@ -199,9 +218,9 @@ class AgregarProductoView(ctk.CTkFrame):
                     codigo,
                     nombre,
                     precio,
-                    stock,
                     unidad_id,
-                    ubicacion
+                    ubicacion,
+                    categoria_id
                 )
                 accion = "agregó"
             else:
@@ -210,9 +229,9 @@ class AgregarProductoView(ctk.CTkFrame):
                     codigo,
                     nombre,
                     precio,
-                    stock,
                     unidad_id,
-                    ubicacion
+                    ubicacion,
+                    categoria_id
                 )
                 accion = "actualizó"
 
@@ -233,8 +252,7 @@ class AgregarProductoView(ctk.CTkFrame):
         except Exception as error:
             messagebox.showerror(
                 "Error al guardar",
-                "No fue posible guardar el producto.\n\n"
-                f"Detalle: {error}",
+                f"No fue posible guardar el producto.\n\nDetalle: {error}",
                 parent=self
             )
 

@@ -41,6 +41,7 @@ class NavegacionController:
             self.root,
             self.productos_controller,
             self.unidades_controller,
+            self.categorias_controller,
             self
         )
         self.vista_actual.pack(fill="both", expand=True)
@@ -52,6 +53,7 @@ class NavegacionController:
             self.root,
             self.productos_controller,
             self.unidades_controller,
+            self.categorias_controller,
             self,
             producto_id=producto_id
         )
