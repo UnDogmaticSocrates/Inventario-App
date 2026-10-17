@@ -1,4 +1,4 @@
-
+import math
 import customtkinter as ctk
 from tkinter import messagebox
 
@@ -102,6 +102,35 @@ class AgregarProductoView(ctk.CTkFrame):
             self, placeholder_text="Ubicación (ej. B1C3)"
         )
         self.ubicacion_entry.pack(pady=5)
+        
+        # Existencia inicial: solo se solicita al crear productos.
+        self.cantidad_inicial_entry = None
+        self.omitir_existencia_var = None
+
+        if not es_edicion:
+            ctk.CTkLabel(
+                self,
+                text="Existencia inicial",
+                font=("Arial", 14, "bold")
+            ).pack(pady=(12, 3))
+
+            self.cantidad_inicial_entry = ctk.CTkEntry(
+                self,
+                placeholder_text="Cantidad inicial"
+            )
+            self.cantidad_inicial_entry.pack(pady=5)
+            self.cantidad_inicial_entry.insert(0, "0")
+
+            self.omitir_existencia_var = ctk.BooleanVar(value=False)
+
+            self.omitir_existencia_checkbox = ctk.CTkCheckBox(
+                self,
+                text="Omitir existencia inicial",
+                variable=self.omitir_existencia_var,
+                command=self.actualizar_campo_existencia
+            )
+            self.omitir_existencia_checkbox.pack(pady=5)
+
 
         self.guardar_button = ctk.CTkButton(
             self,
@@ -202,7 +231,7 @@ class AgregarProductoView(ctk.CTkFrame):
 
         try:
             precio = float(precio_texto)
-            if precio < 0:
+            if not math.isfinite(precio) or precio < 0:
                 raise ValueError
         except ValueError:
             messagebox.showwarning(
@@ -211,6 +240,39 @@ class AgregarProductoView(ctk.CTkFrame):
                 parent=self
             )
             return
+        
+        
+        cantidad_inicial = None
+        registrar_existencia_inicial = False
+
+        if self.producto_id is None:
+            registrar_existencia_inicial = (
+                not self.omitir_existencia_var.get()
+            )
+
+            if registrar_existencia_inicial:
+                cantidad_texto = (
+                    self.cantidad_inicial_entry.get().strip()
+                )
+
+                try:
+                    cantidad_inicial = float(cantidad_texto)
+
+                    if (
+                        not math.isfinite(cantidad_inicial)
+                        or cantidad_inicial < 0
+                    ):
+                        raise ValueError
+
+                except ValueError:
+                    messagebox.showwarning(
+                        "Cantidad inválida",
+                        "La existencia inicial debe ser un número "
+                        "válido y no negativo.",
+                        parent=self
+                    )
+                    return
+
 
         try:
             if self.producto_id is None:
@@ -220,7 +282,9 @@ class AgregarProductoView(ctk.CTkFrame):
                     precio,
                     unidad_id,
                     ubicacion,
-                    categoria_id
+                    categoria_id,
+                    cantidad_inicial,
+                    registrar_existencia_inicial
                 )
                 accion = "agregó"
             else:
@@ -256,4 +320,10 @@ class AgregarProductoView(ctk.CTkFrame):
                 parent=self
             )
 
-        
+    
+    def actualizar_campo_existencia(self):
+        if self.omitir_existencia_var.get():
+            self.cantidad_inicial_entry.configure(state="disabled")
+        else:
+            self.cantidad_inicial_entry.configure(state="normal")
+    

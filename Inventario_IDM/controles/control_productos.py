@@ -5,7 +5,9 @@ import dao.productos_dao
 class ProductosController:
 
     def crear_producto(
-        self, codigo, nombre, precio, unidad_id, ubicacion, categoria_id
+        self, codigo, nombre, precio, unidad_id, ubicacion, 
+        categoria_id, cantidad_inicial = None,
+        registrar_existencia_inicial = True
     ):
         return dao.productos_dao.crear_producto(
             codigo,
@@ -13,7 +15,9 @@ class ProductosController:
             precio,
             unidad_id,
             ubicacion,
-            categoria_id
+            categoria_id,
+            cantidad_inicial,
+            registrar_existencia_inicial
         )
 
     def obtener_productos(self):
@@ -44,3 +48,13 @@ class ProductosController:
     
     def obtener_productos_desactivados(self):
         return dao.productos_dao.obtener_productos_desactivados()
+    
+    def registrar_movimiento(self, id_producto, tipo, cantidad, motivo=None):
+        return dao.productos_dao.registrar_movimiento(
+            id_producto, tipo, cantidad, motivo
+        )
+
+    def obtener_historial_movimientos(self, id_producto):
+        return dao.productos_dao.obtener_historial_movimientos(
+            id_producto
+        )
