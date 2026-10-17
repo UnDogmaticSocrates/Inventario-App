@@ -160,6 +160,12 @@ class CatalogoProductosView(ctk.CTkFrame):
             hover_color="#812525",
             command=self.desactivar_producto
         ).pack(side="left")
+        
+        ctk.CTkButton(
+            acciones,
+            text="Productos desactivados",
+            command=self.mostrar_productos_desactivados
+        ).pack(side="left", padx=(10, 0))
 
         # Pie
         pie = ctk.CTkFrame(self, fg_color="transparent")
@@ -337,6 +343,168 @@ class CatalogoProductosView(ctk.CTkFrame):
                 parent=self
             )
 
+    
+    def mostrar_productos_desactivados(self):
+        ventana = ctk.CTkToplevel(self)
+        ventana.title("Productos desactivados")
+        ventana.geometry("850x450")
+        ventana.transient(self.winfo_toplevel())
+
+        ventana.grid_columnconfigure(0, weight=1)
+        ventana.grid_rowconfigure(0, weight=1)
+
+        columnas = ("codigo", "nombre", "stock", "unidad", "categoria")
+
+        tabla = ttk.Treeview(
+            ventana,
+            columns=columnas,
+            show="headings",
+            selectmode="browse"
+        )
+
+        encabezados = {
+            "codigo": "Código",
+            "nombre": "Producto",
+            "stock": "Existencia",
+            "unidad": "Unidad",
+            "categoria": "Categoría"
+        }
+
+        anchos = {
+            "codigo": 100,
+            "nombre": 220,
+            "stock": 100,
+            "unidad": 120,
+            "categoria": 180
+        }
+
+        for columna in columnas:
+            tabla.heading(columna, text=encabezados[columna])
+            tabla.column(columna, width=anchos[columna], anchor="w")
+
+        tabla.grid(
+            row=0, column=0, columnspan=2,
+            sticky="nsew", padx=15, pady=15
+        )
+
+        ctk.CTkButton(
+            ventana,
+            text="Reactivar producto",
+            command=lambda: self.reactivar_producto(ventana, tabla)
+        ).grid(row=1, column=0, padx=15, pady=(0, 15), sticky="w")
+
+        ctk.CTkButton(
+            ventana,
+            text="Actualizar lista",
+            command=lambda: self.cargar_productos_desactivados(tabla)
+        ).grid(row=1, column=1, padx=15, pady=(0, 15), sticky="e")
+
+        self.cargar_productos_desactivados(tabla)
+
+
+    def cargar_productos_desactivados(self, tabla):
+        try:
+            productos = (
+                self.productos_controller.obtener_productos_desactivados()
+            )
+
+            for elemento in tabla.get_children():
+                tabla.delete(elemento)
+
+            for producto in productos:
+                # id, codigo, nombre, precio, stock,
+                # unidad_id, ubicacion, categoria_id,
+                # proveedor_id, activo
+                if len(producto) < 10:
+                    continue
+
+                id_producto = producto[0]
+                codigo = producto[1] or ""
+                nombre = producto[2] or ""
+                stock = producto[4]
+                unidad_id = producto[5]
+                categoria_id = producto[7]
+
+                nombre_unidad = self.unidades.get(
+                    unidad_id, "Sin unidad"
+                )
+                nombre_categoria = self.categorias.get(
+                    categoria_id, "Sin categoría"
+                )
+
+                tabla.insert(
+                    "",
+                    "end",
+                    iid=str(id_producto),
+                    values=(
+                        codigo,
+                        nombre,
+                        stock,
+                        nombre_unidad,
+                        nombre_categoria
+                    )
+                )
+
+        except Exception as error:
+            messagebox.showerror(
+                "Error",
+                f"No fue posible cargar los productos desactivados.\n\n{error}",
+                parent=tabla.winfo_toplevel()
+            )
+
+
+    def reactivar_producto(self, ventana, tabla):
+        seleccion = tabla.selection()
+
+        if not seleccion:
+            messagebox.showwarning(
+                "Selecciona un producto",
+                "Selecciona el producto que deseas reactivar.",
+                parent=ventana
+            )
+            return
+
+        id_producto = int(seleccion[0])
+
+        confirmar = messagebox.askyesno(
+            "Confirmar reactivación",
+            "¿Deseas reactivar este producto?",
+            parent=ventana
+        )
+
+        if not confirmar:
+            return
+
+        try:
+            resultado = self.productos_controller.activar_producto(
+                id_producto
+            )
+
+            if resultado:
+                messagebox.showinfo(
+                    "Producto reactivado",
+                    "El producto vuelve a estar disponible en el catálogo.",
+                    parent=ventana
+                )
+
+                self.cargar_productos()
+                self.cargar_productos_desactivados(tabla)
+
+            else:
+                messagebox.showwarning(
+                    "Sin cambios",
+                    "El producto ya estaba activo o no existe.",
+                    parent=ventana
+                )
+
+                self.cargar_productos_desactivados(tabla)
+
+        except Exception as error:
+            messagebox.showerror(
+                "Error",
+                f"No fue posible reactivar el producto.\n\n{error}",
+                parent=ventana
+        )
 
 
         

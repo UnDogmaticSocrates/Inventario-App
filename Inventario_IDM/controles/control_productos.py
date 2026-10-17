@@ -41,3 +41,6 @@ class ProductosController:
 
     def activar_producto(self, id_producto):
         return dao.productos_dao.activar_producto(id_producto)
+    
+    def obtener_productos_desactivados(self):
+        return dao.productos_dao.obtener_productos_desactivados()

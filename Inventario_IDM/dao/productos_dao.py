@@ -149,5 +149,21 @@ def activar_producto(id_producto):
     finally:
         conexion.close()
 
+def obtener_productos_desactivados():
+    conexion = conectar()
 
+    try:
+        cursor = conexion.execute("""
+            SELECT
+                id, codigo, nombre, precio, stock,
+                unidad_id, ubicacion, categoria_id,
+                proveedor_id, activo
+            FROM productos
+            WHERE activo = 0
+            ORDER BY nombre COLLATE NOCASE
+        """)
+        return cursor.fetchall()
+
+    finally:
+        conexion.close()
 
