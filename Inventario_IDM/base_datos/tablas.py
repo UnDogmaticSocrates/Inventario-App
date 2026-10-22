@@ -60,6 +60,16 @@ def crear_tablas():
                 ADD COLUMN activo INTEGER NOT NULL DEFAULT 1
             """)
 
+        # Migración: existencia mínima para reabastecimiento.
+        cursor.execute("PRAGMA table_info(productos)")
+        columnas = [columna[1] for columna in cursor.fetchall()]
+
+        if "stock_minimo" not in columnas:
+            cursor.execute("""
+                ALTER TABLE productos
+                ADD COLUMN stock_minimo REAL NOT NULL DEFAULT 0
+            """)
+
         # Migración: estado de las categorías.
         cursor.execute("PRAGMA table_info(categorias)")
         columnas_categorias = [

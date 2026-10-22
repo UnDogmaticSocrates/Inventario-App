@@ -102,6 +102,20 @@ class AgregarProductoView(ctk.CTkFrame):
             self, placeholder_text="Ubicación (ej. B1C3)"
         )
         self.ubicacion_entry.pack(pady=5)
+
+                # Existencia mínima para el reporte de reabastecimiento.
+        ctk.CTkLabel(
+            self,
+            text="Existencia mínima",
+            font=("Arial", 14, "bold")
+        ).pack(pady=(12, 3))
+
+        self.stock_minimo_entry = ctk.CTkEntry(
+            self,
+            placeholder_text="Mínimo para reabastecimiento"
+        )
+        self.stock_minimo_entry.pack(pady=5)
+        self.stock_minimo_entry.insert(0, "0")
         
         # Existencia inicial: solo se solicita al crear productos.
         self.cantidad_inicial_entry = None
@@ -183,6 +197,8 @@ class AgregarProductoView(ctk.CTkFrame):
                     break
 
             self.ubicacion_entry.insert(0, producto[6] or "")
+            self.stock_minimo_entry.delete(0, "end")# id, codigo, nombre, precio, stock, unidad_id,
+            self.stock_minimo_entry.insert(0, str(producto[10]))# ubicacion, categoria_id, proveedor_id, activo, stock_minimo
 
         except Exception as error:
             messagebox.showerror(
@@ -202,6 +218,22 @@ class AgregarProductoView(ctk.CTkFrame):
             messagebox.showwarning(
                 "Campos obligatorios",
                 "Completa el código, nombre y precio.",
+                parent=self
+            )
+            return
+
+        stock_minimo_texto = self.stock_minimo_entry.get().strip()
+
+        try:
+            stock_minimo = float(stock_minimo_texto)
+
+            if not math.isfinite(stock_minimo) or stock_minimo < 0:
+                raise ValueError
+
+        except ValueError:
+            messagebox.showwarning(
+                "Existencia mínima inválida",
+                "Introduce un número válido y no negativo.",
                 parent=self
             )
             return
@@ -284,7 +316,8 @@ class AgregarProductoView(ctk.CTkFrame):
                     ubicacion,
                     categoria_id,
                     cantidad_inicial,
-                    registrar_existencia_inicial
+                    registrar_existencia_inicial,
+                    stock_minimo
                 )
                 accion = "agregó"
             else:
@@ -295,7 +328,8 @@ class AgregarProductoView(ctk.CTkFrame):
                     precio,
                     unidad_id,
                     ubicacion,
-                    categoria_id
+                    categoria_id,
+                    stock_minimo
                 )
                 accion = "actualizó"
 

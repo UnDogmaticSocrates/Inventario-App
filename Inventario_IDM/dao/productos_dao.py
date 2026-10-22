@@ -4,33 +4,45 @@ from base_datos.conection import conectar
 
 def crear_producto(
     codigo, nombre, precio, unidad_id, ubicacion, categoria_id,
-    cantidad_inicial = None, registrar_existencia_inicial = True
+    cantidad_inicial=None,
+    registrar_existencia_inicial=True,
+    stock_minimo=0
 ):
+    try:
+        stock_minimo = float(stock_minimo)
+    except (TypeError, ValueError):
+        raise ValueError("La existencia mínima debe ser numérica.")
+
+    if not math.isfinite(stock_minimo) or stock_minimo < 0:
+        raise ValueError(
+            "La existencia mínima debe ser válida y no negativa."
+        )
+
     if registrar_existencia_inicial:
         if cantidad_inicial is None:
             raise ValueError("Indica la existencia inicial.")
-        
-        cantidad_inicial= float(cantidad_inicial)
-        
+
+        try:
+            cantidad_inicial = float(cantidad_inicial)
+        except (TypeError, ValueError):
+            raise ValueError("La existencia inicial debe ser numérica.")
+
         if not math.isfinite(cantidad_inicial) or cantidad_inicial < 0:
             raise ValueError(
                 "Ingrese un número válido que no sea negativo."
             )
-            
     else:
         cantidad_inicial = 0
-        
-        
+
     conexion = conectar()
-    
-    
+
     try:
         cursor = conexion.execute("""
             INSERT INTO productos (
                 codigo, nombre, precio, stock,
-                unidad_id, ubicacion, categoria_id
+                unidad_id, ubicacion, categoria_id, stock_minimo
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             codigo,
             nombre,
@@ -38,21 +50,18 @@ def crear_producto(
             cantidad_inicial,
             unidad_id,
             ubicacion,
-            categoria_id
+            categoria_id,
+            stock_minimo
         ))
-        
+
         id_producto = cursor.lastrowid
-        
+
         if registrar_existencia_inicial:
             conexion.execute("""
                 INSERT INTO movimientos_inventario (
-                    producto_id, 
-                    tipo,
-                    cantidad,
-                    stock_resultante,
-                    motivo
+                    producto_id, tipo, cantidad, stock_resultante, motivo
                 )
-                VALUES(?, 'existencia_inicial', ?, ?, ?)
+                VALUES (?, 'existencia_inicial', ?, ?, ?)
             """, (
                 id_producto,
                 cantidad_inicial,
@@ -68,7 +77,7 @@ def crear_producto(
         raise
 
     finally:
-        conexion.close()
+        conexion.close()    
 
 
 def obtener_productos():
@@ -79,7 +88,7 @@ def obtener_productos():
             SELECT
                 id, codigo, nombre, precio, stock,
                 unidad_id, ubicacion, categoria_id,
-                proveedor_id, activo
+                proveedor_id, activo, stock_minimo
             FROM productos
             WHERE activo = 1
             ORDER BY nombre COLLATE NOCASE
@@ -107,8 +116,19 @@ def obtener_producto_por_id(id_producto):
 
 def actualizar_producto(
     id_producto, codigo, nombre, precio,
-    unidad_id, ubicacion, categoria_id
+    unidad_id, ubicacion, categoria_id, stock_minimo=0
 ):
+
+    try:
+        stock_minimo = float(stock_minimo)
+    except (TypeError, ValueError):
+        raise ValueError("La existencia mínima debe ser numérica.")
+
+    if not math.isfinite(stock_minimo) or stock_minimo < 0:
+        raise ValueError(
+            "La existencia mínima debe ser válida y no negativa."
+        )
+    
     conexion = conectar()
 
     try:
@@ -119,7 +139,8 @@ def actualizar_producto(
                 precio = ?,
                 unidad_id = ?,
                 ubicacion = ?,
-                categoria_id = ?
+                categoria_id = ?,
+                stock_minimo = ?
             WHERE id = ?
               AND activo = 1
         """, (
@@ -129,6 +150,7 @@ def actualizar_producto(
             unidad_id,
             ubicacion,
             categoria_id,
+            stock_minimo,
             id_producto
         ))
 
@@ -194,7 +216,7 @@ def obtener_productos_desactivados():
             SELECT
                 id, codigo, nombre, precio, stock,
                 unidad_id, ubicacion, categoria_id,
-                proveedor_id, activo
+                proveedor_id, activo, stock_minimo
             FROM productos
             WHERE activo = 0
             ORDER BY nombre COLLATE NOCASE
