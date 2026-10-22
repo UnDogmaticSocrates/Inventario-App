@@ -1,4 +1,4 @@
-
+from view.productos.movimientos import MovimientosView
 from view.menu import MenuView
 from view.productos.catalogo import CatalogoProductosView
 from view.productos.agregar import AgregarProductoView
@@ -46,6 +46,17 @@ class NavegacionController:
         )
         self.vista_actual.pack(fill="both", expand=True)
 
+
+    def mostrar_movimientos(self):
+            self.limpiar_vista()
+    
+            self.vista_actual = MovimientosView(
+                self.root,
+                self.productos_controller,
+                self
+            )
+            self.vista_actual.pack(fill="both", expand=True)
+
     def mostrar_agregar_producto(self, producto_id=None):
         self.limpiar_vista()
 
@@ -87,3 +98,5 @@ class NavegacionController:
 
     def salir(self):
         self.root.destroy()
+
+    

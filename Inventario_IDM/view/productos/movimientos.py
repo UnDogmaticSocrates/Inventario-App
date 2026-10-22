@@ -75,6 +75,12 @@ class MovimientosView(ctk.CTkFrame):
             command=self.ver_historial
         ).pack(pady=5)
 
+        ctk.CTkButton(
+            self,
+            text="Volver al menú",
+            command=self.navegacion_controller.mostrar_menu
+        ).pack(pady=10)
+
         self.cargar_productos()
 
     def cargar_productos(self):
@@ -181,6 +187,7 @@ class MovimientosView(ctk.CTkFrame):
         self.motivo_entry.delete(0, "end")
         self.actualizar_stock()
 
+   
     def ver_historial(self):
         id_producto = self.obtener_id_producto()
 
@@ -198,44 +205,72 @@ class MovimientosView(ctk.CTkFrame):
 
         ventana = ctk.CTkToplevel(self)
         ventana.title("Historial de movimientos")
-        ventana.geometry("850x450")
+        ventana.geometry("1050x500")
+        ventana.grid_columnconfigure(0, weight=1)
+        ventana.grid_rowconfigure(1, weight=1)
+
+        producto_seleccionado = self.producto_combo.get().split("|", 1)[1].strip()
 
         ctk.CTkLabel(
             ventana,
-            text="Historial de movimientos",
+            text=f"Historial de movimientos: {producto_seleccionado}",
             font=("Arial", 20, "bold")
-        ).pack(pady=15)
+        ).grid(row=0, column=0, padx=20, pady=15, sticky="w")
 
         tabla = ctk.CTkScrollableFrame(ventana)
-        tabla.pack(fill="both", expand=True, padx=15, pady=10)
+        tabla.grid(row=1, column=0, padx=15, pady=10, sticky="nsew")
 
-        encabezados = (
-            "Tipo", "Cantidad/diferencia", "Stock resultante", "Motivo", "Fecha"
-        )
+        encabezados = [
+            "ID", "Tipo", "Cantidad", "Existencia final", "Motivo", "Fecha"
+        ]
 
-        ctk.CTkLabel(
-            tabla,
-            text=" | ".join(encabezados),
-            font=("Arial", 12, "bold")
-        ).pack(anchor="w", pady=5)
+        anchos = [45, 150, 100, 130, 250, 220]
+
+        for columna, (encabezado, ancho) in enumerate(zip(encabezados, anchos)):
+            tabla.grid_columnconfigure(columna, minsize=ancho, weight=1)
+
+            ctk.CTkLabel(
+                tabla,
+                text=encabezado,
+                font=("Arial", 12, "bold"),
+                anchor="w"
+            ).grid(
+                row=0,
+                column=columna,
+                padx=8,
+                pady=8,
+                sticky="ew"
+            )
 
         if not historial:
             ctk.CTkLabel(
                 tabla,
                 text="Este producto no tiene movimientos registrados."
-            ).pack(anchor="w", pady=5)
+            ).grid(row=1, column=0, columnspan=6, padx=10, pady=20)
             return
 
-        for movimiento in historial:
-            _, tipo, cantidad, stock, motivo, fecha = movimiento
+        for fila, movimiento in enumerate(historial, start=1):
+            id_mov, tipo, cantidad, stock, motivo, fecha = movimiento
 
-            texto = (
-                f"{tipo} | {cantidad:g} | {stock:g} | "
-                f"{motivo or '-'} | {fecha}"
-            )
+            valores = [
+                id_mov,
+                tipo.replace("_", " ").capitalize(),
+                f"{cantidad:g}",
+                f"{stock:g}",
+                motivo or "-",
+                fecha
+            ]
 
-            ctk.CTkLabel(
-                tabla,
-                text=texto,
-                anchor="w"
-            ).pack(anchor="w", pady=3)
+            for columna, valor in enumerate(valores):
+                ctk.CTkLabel(
+                    tabla,
+                    text=str(valor),
+                    anchor="w"
+                ).grid(
+                    row=fila,
+                    column=columna,
+                    padx=8,
+                    pady=5,
+                    sticky="ew"
+                )
+

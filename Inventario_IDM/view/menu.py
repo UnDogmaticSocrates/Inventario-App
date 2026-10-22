@@ -103,8 +103,7 @@ class MenuView(ctk.CTkFrame):
         opciones = [
             ("📦", "Productos", "mostrar_productos"),
             ("🚚", "Proveedores", None),
-            ("📥", "Entradas", None),
-            ("📤", "Salidas", None),
+            ("📥", "Movimientos", "mostrar_movimientos"),
             ("📅", "Caducidad", None),
             ("🗂", "Categorías", "mostrar_categorias"),
             ("⚖", "Unidades", "mostrar_unidades"),
