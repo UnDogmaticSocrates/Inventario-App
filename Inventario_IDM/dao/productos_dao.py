@@ -6,7 +6,8 @@ def crear_producto(
     codigo, nombre, precio, unidad_id, ubicacion, categoria_id,
     cantidad_inicial=None,
     registrar_existencia_inicial=True,
-    stock_minimo=0
+    stock_minimo=0,
+    descripcion=None
 ):
     try:
         stock_minimo = float(stock_minimo)
@@ -40,9 +41,9 @@ def crear_producto(
         cursor = conexion.execute("""
             INSERT INTO productos (
                 codigo, nombre, precio, stock,
-                unidad_id, ubicacion, categoria_id, stock_minimo
+                unidad_id, ubicacion, categoria_id, stock_minimo, descripcion
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             codigo,
             nombre,
@@ -51,7 +52,8 @@ def crear_producto(
             unidad_id,
             ubicacion,
             categoria_id,
-            stock_minimo
+            stock_minimo,
+            descripcion
         ))
 
         id_producto = cursor.lastrowid
@@ -88,7 +90,7 @@ def obtener_productos():
             SELECT
                 id, codigo, nombre, precio, stock,
                 unidad_id, ubicacion, categoria_id,
-                proveedor_id, activo, stock_minimo
+                proveedor_id, activo, stock_minimo, descripcion
             FROM productos
             WHERE activo = 1
             ORDER BY nombre COLLATE NOCASE
@@ -116,7 +118,7 @@ def obtener_producto_por_id(id_producto):
 
 def actualizar_producto(
     id_producto, codigo, nombre, precio,
-    unidad_id, ubicacion, categoria_id, stock_minimo=0
+    unidad_id, ubicacion, categoria_id, stock_minimo=0, descripcion=None
 ):
 
     try:
@@ -140,7 +142,8 @@ def actualizar_producto(
                 unidad_id = ?,
                 ubicacion = ?,
                 categoria_id = ?,
-                stock_minimo = ?
+                stock_minimo = ?,
+                descripcion = ?
             WHERE id = ?
               AND activo = 1
         """, (
@@ -151,6 +154,7 @@ def actualizar_producto(
             ubicacion,
             categoria_id,
             stock_minimo,
+            descripcion,
             id_producto
         ))
 
@@ -216,7 +220,7 @@ def obtener_productos_desactivados():
             SELECT
                 id, codigo, nombre, precio, stock,
                 unidad_id, ubicacion, categoria_id,
-                proveedor_id, activo, stock_minimo
+                proveedor_id, activo, stock_minimo, descripcion
             FROM productos
             WHERE activo = 0
             ORDER BY nombre COLLATE NOCASE

@@ -70,6 +70,16 @@ def crear_tablas():
                 ADD COLUMN stock_minimo REAL NOT NULL DEFAULT 0
             """)
 
+        # Migración: agregar descripción a los productos.
+        cursor.execute("PRAGMA table_info(productos)")
+        columnas = [columna[1] for columna in cursor.fetchall()]
+
+        if "descripcion" not in columnas:
+            cursor.execute("""
+                ALTER TABLE productos
+                ADD COLUMN descripcion TEXT
+            """)
+
         # Migración: estado de las categorías.
         cursor.execute("PRAGMA table_info(categorias)")
         columnas_categorias = [

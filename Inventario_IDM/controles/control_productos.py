@@ -8,7 +8,8 @@ class ProductosController:
         self, codigo, nombre, precio, unidad_id, ubicacion, 
         categoria_id, cantidad_inicial = None,
         registrar_existencia_inicial = True, 
-        stock_minimo = 0
+        stock_minimo = 0,
+        descripcion = None
     ):
         return dao.productos_dao.crear_producto(
             codigo,
@@ -19,7 +20,8 @@ class ProductosController:
             categoria_id,
             cantidad_inicial,
             registrar_existencia_inicial,
-            stock_minimo
+            stock_minimo,
+            descripcion
         )
 
     def obtener_productos(self):
@@ -30,7 +32,8 @@ class ProductosController:
 
     def actualizar_producto(
         self, id_producto, codigo, nombre, precio,
-        unidad_id, ubicacion, categoria_id, stock_minimo=0
+        unidad_id, ubicacion, categoria_id, stock_minimo=0,
+        descripcion=None
     ):
         return dao.productos_dao.actualizar_producto(
             id_producto,
@@ -40,7 +43,8 @@ class ProductosController:
             unidad_id,
             ubicacion,
             categoria_id,
-            stock_minimo
+            stock_minimo,
+            descripcion
         )
 
     def desactivar_producto(self, id_producto):
