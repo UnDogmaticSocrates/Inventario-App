@@ -50,6 +50,25 @@ class AgregarProductoView(ctk.CTkFrame):
         )
         self.nombre_entry.pack(pady=5)
 
+        ctk.CTkLabel(
+            self,
+            text="Descripción / especificaciones",
+            font=("Arial", 14, "bold")
+        ).pack(pady=(12, 3))
+
+        self.descripcion_textbox = ctk.CTkTextbox(
+            self,
+            height=100,
+            width=300,
+            wrap="word"
+        )
+        self.descripcion_textbox.pack(pady=5)
+
+        self.descripcion_textbox.insert(
+            "1.0",
+            ""
+        )
+
         # Categorías disponibles
         categorias = self.categorias_controller.obtener_categorias()
 
@@ -199,7 +218,11 @@ class AgregarProductoView(ctk.CTkFrame):
             self.ubicacion_entry.insert(0, producto[6] or "")
             self.stock_minimo_entry.delete(0, "end")# id, codigo, nombre, precio, stock, unidad_id,
             self.stock_minimo_entry.insert(0, str(producto[10]))# ubicacion, categoria_id, proveedor_id, activo, stock_minimo
-
+            self.descripcion_textbox.delete("1.0", "end")
+            self.descripcion_textbox.insert(
+                "1.0",
+                producto[11] or ""
+            )
         except Exception as error:
             messagebox.showerror(
                 "Error",
@@ -213,6 +236,13 @@ class AgregarProductoView(ctk.CTkFrame):
         nombre = self.nombre_entry.get().strip()
         precio_texto = self.precio_entry.get().strip()
         ubicacion = self.ubicacion_entry.get().strip()
+        descripcion = self.descripcion_textbox.get(
+            "1.0", "end-1c"
+        ).strip()
+
+        # Guardar texto vacío como NULL en SQLite.
+        if not descripcion:
+            descripcion = None
 
         if not codigo or not nombre or not precio_texto:
             messagebox.showwarning(
@@ -317,7 +347,8 @@ class AgregarProductoView(ctk.CTkFrame):
                     categoria_id,
                     cantidad_inicial,
                     registrar_existencia_inicial,
-                    stock_minimo
+                    stock_minimo,
+                    descripcion
                 )
                 accion = "agregó"
             else:
@@ -329,7 +360,8 @@ class AgregarProductoView(ctk.CTkFrame):
                     unidad_id,
                     ubicacion,
                     categoria_id,
-                    stock_minimo
+                    stock_minimo,
+                    descripcion
                 )
                 accion = "actualizó"
 

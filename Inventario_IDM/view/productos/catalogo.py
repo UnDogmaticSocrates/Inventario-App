@@ -140,6 +140,37 @@ class CatalogoProductosView(ctk.CTkFrame):
         self.tabla.grid(row=0, column=0, sticky="nsew")
         scroll.grid(row=0, column=1, sticky="ns")
 
+                # Panel de detalles del producto seleccionado
+        self.detalles_frame = ctk.CTkFrame(self)
+        self.detalles_frame.grid(
+            row=3, column=0, sticky="ew",
+            padx=30, pady=(5, 10)
+        )
+        self.detalles_frame.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            self.detalles_frame,
+            text="Detalles del producto seleccionado",
+            font=("Arial", 16, "bold")
+        ).grid(row=0, column=0, sticky="w", padx=15, pady=(10, 5))
+
+        self.descripcion_label = ctk.CTkLabel(
+            self.detalles_frame,
+            text="Selecciona un producto para ver sus especificaciones.",
+            justify="left",
+            anchor="w",
+            wraplength=800      
+        )
+        self.descripcion_label.grid(
+            row=1, column=0, sticky="ew",
+            padx=15, pady=(0, 10)
+        )
+
+        self.tabla.bind(
+            "<<TreeviewSelect>>",
+            self.mostrar_detalles_producto
+        )
+
         # Acciones
         acciones = ctk.CTkFrame(self, fg_color="transparent")
         acciones.grid(
@@ -247,8 +278,10 @@ class CatalogoProductosView(ctk.CTkFrame):
                 categoria_id, "Sin categoría"
             )
 
+            descripcion = producto[11] or ""
+
             if texto not in (
-                f"{codigo} {nombre} {nombre_categoria}".lower()
+                f"{codigo} {nombre} {nombre_categoria} {descripcion}".lower()
             ):
                 continue
 
@@ -506,5 +539,32 @@ class CatalogoProductosView(ctk.CTkFrame):
                 parent=ventana
         )
 
+    def mostrar_detalles_producto(self, evento=None):
+        seleccion = self.tabla.selection()
 
+        if not seleccion:
+            self.descripcion_label.configure(
+                text="Selecciona un producto para ver sus especificaciones."
+            )
+            return
+
+        id_producto = int(seleccion[0])
+
+        producto = next(
+            (
+                producto for producto in self.productos
+                if producto[0] == id_producto
+            ),
+            None
+        )
+
+        if producto is None:
+            return
+
+        # descripcion es la columna 11, después de stock_minimo.
+        descripcion = producto[11] or "Sin descripción registrada."
+
+        self.descripcion_label.configure(
+            text=f"{producto[2]}\n\n{descripcion}"
+        )
         
