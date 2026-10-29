@@ -10,6 +10,9 @@ from controles.control_unidades import UnidadesController
 from view.categorias.catalogo import CategoriasView
 from controles.control_categorias import CategoriasController
 
+from controles.control_productos_criticos import ProductosCriticosController
+from view.productos.criticos import ProductosCriticosView
+
 
 class NavegacionController:
 
@@ -20,7 +23,7 @@ class NavegacionController:
         self.productos_controller = ProductosController()
         self.unidades_controller = UnidadesController()
         self.categorias_controller = CategoriasController()
-
+        self.productos_criticos_controller = ProductosCriticosController()
         self.mostrar_menu()
 
     def limpiar_vista(self):
@@ -99,4 +102,13 @@ class NavegacionController:
     def salir(self):
         self.root.destroy()
 
-    
+    def mostrar_productos_criticos(self):
+        self.limpiar_vista()
+
+        self.vista_actual = ProductosCriticosView(
+            self.root,
+            self.productos_criticos_controller,
+            self.productos_controller,
+            self
+        )
+        self.vista_actual.pack(fill="both", expand=True)

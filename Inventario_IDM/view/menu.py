@@ -108,6 +108,8 @@ class MenuView(ctk.CTkFrame):
             ("🗂", "Categorías", "mostrar_categorias"),
             ("⚖", "Unidades", "mostrar_unidades"),
             ("📊", "Reportes", None),
+            ("⚠️", "Productos críticos", "mostrar_productos_criticos"),
+
         ]
 
         for indice, (icono, nombre, accion) in enumerate(opciones):

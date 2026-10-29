@@ -120,6 +120,285 @@ def crear_tablas():
             )
         """)
 
+        
+        # Productos seleccionados para seguimiento crítico.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS productos_criticos(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL UNIQUE,
+                motivo TEXT NOT NULL DEFAULT 'esencial'
+                    CHECK (
+                        motivo IN (
+                            'esencial',
+                            'dificil_conseguir',
+                            'ambos'
+                        )
+                    ),
+                frecuencia_reporte TEXT NOT NULL DEFAULT 'semanal'
+                    CHECK (
+                        frecuencia_reporte IN (
+                            'cada_3_dias',
+                            'semanal',
+                            'desactivado'
+                        )
+                    ),
+                alertas_activas INTEGER NOT NULL DEFAULT 1
+                    CHECK (alertas_activas IN (0, 1)),
+                activo INTEGER NOT NULL DEFAULT 1
+                    CHECK (activo IN (0, 1)),
+                fecha_creacion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        # Registro de alertas de inventario detectadas.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS alertas_inventario(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL,
+                stock_detectado REAL NOT NULL,
+                stock_minimo REAL NOT NULL,
+                fecha_deteccion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                fecha_notificacion TEXT,
+                estado TEXT NOT NULL DEFAULT 'pendiente'
+                    CHECK (
+                        estado IN (
+                            'pendiente',
+                            'notificada',
+                            'resuelta'
+                        )
+                    ),
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        
+        # Productos seleccionados para seguimiento crítico.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS productos_criticos(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL UNIQUE,
+                motivo TEXT NOT NULL DEFAULT 'esencial'
+                    CHECK (
+                        motivo IN (
+                            'esencial',
+                            'dificil_conseguir',
+                            'ambos'
+                        )
+                    ),
+                frecuencia_reporte TEXT NOT NULL DEFAULT 'semanal'
+                    CHECK (
+                        frecuencia_reporte IN (
+                            'cada_3_dias',
+                            'semanal',
+                            'desactivado'
+                        )
+                    ),
+                alertas_activas INTEGER NOT NULL DEFAULT 1
+                    CHECK (alertas_activas IN (0, 1)),
+                activo INTEGER NOT NULL DEFAULT 1
+                    CHECK (activo IN (0, 1)),
+                fecha_creacion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        # Registro de alertas de inventario detectadas.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS alertas_inventario(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL,
+                stock_detectado REAL NOT NULL,
+                stock_minimo REAL NOT NULL,
+                fecha_deteccion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                fecha_notificacion TEXT,
+                estado TEXT NOT NULL DEFAULT 'pendiente'
+                    CHECK (
+                        estado IN (
+                            'pendiente',
+                            'notificada',
+                            'resuelta'
+                        )
+                    ),
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        # Productos seleccionados para seguimiento crítico.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS productos_criticos(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL UNIQUE,
+                motivo TEXT NOT NULL DEFAULT 'esencial'
+                    CHECK (
+                        motivo IN (
+                            'esencial',
+                            'dificil_conseguir',
+                            'ambos'
+                        )
+                    ),
+                frecuencia_reporte TEXT NOT NULL DEFAULT 'semanal'
+                    CHECK (
+                        frecuencia_reporte IN (
+                            'cada_3_dias',
+                            'semanal',
+                            'desactivado'
+                        )
+                    ),
+                alertas_activas INTEGER NOT NULL DEFAULT 1
+                    CHECK (alertas_activas IN (0, 1)),
+                activo INTEGER NOT NULL DEFAULT 1
+                    CHECK (activo IN (0, 1)),
+                fecha_creacion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        # Registro de alertas de inventario detectadas.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS alertas_inventario(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL,
+                stock_detectado REAL NOT NULL,
+                stock_minimo REAL NOT NULL,
+                fecha_deteccion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                fecha_notificacion TEXT,
+                estado TEXT NOT NULL DEFAULT 'pendiente'
+                    CHECK (
+                        estado IN (
+                            'pendiente',
+                            'notificada',
+                            'resuelta'
+                        )
+                    ),
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        # Productos seleccionados para seguimiento crítico.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS productos_criticos(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL UNIQUE,
+                motivo TEXT NOT NULL DEFAULT 'esencial'
+                    CHECK (
+                        motivo IN (
+                            'esencial',
+                            'dificil_conseguir',
+                            'ambos'
+                        )
+                    ),
+                frecuencia_reporte TEXT NOT NULL DEFAULT 'semanal'
+                    CHECK (
+                        frecuencia_reporte IN (
+                            'cada_3_dias',
+                            'semanal',
+                            'desactivado'
+                        )
+                    ),
+                alertas_activas INTEGER NOT NULL DEFAULT 1
+                    CHECK (alertas_activas IN (0, 1)),
+                activo INTEGER NOT NULL DEFAULT 1
+                    CHECK (activo IN (0, 1)),
+                fecha_creacion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        # Registro de alertas de inventario detectadas.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS alertas_inventario(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL,
+                stock_detectado REAL NOT NULL,
+                stock_minimo REAL NOT NULL,
+                fecha_deteccion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                fecha_notificacion TEXT,
+                estado TEXT NOT NULL DEFAULT 'pendiente'
+                    CHECK (
+                        estado IN (
+                            'pendiente',
+                            'notificada',
+                            'resuelta'
+                        )
+                    ),
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        
+        # Productos seleccionados para seguimiento crítico.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS productos_criticos(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL UNIQUE,
+                motivo TEXT NOT NULL DEFAULT 'esencial'
+                    CHECK (
+                        motivo IN (
+                            'esencial',
+                            'dificil_conseguir',
+                            'ambos'
+                        )
+                    ),
+                frecuencia_reporte TEXT NOT NULL DEFAULT 'semanal'
+                    CHECK (
+                        frecuencia_reporte IN (
+                            'cada_3_dias',
+                            'semanal',
+                            'desactivado'
+                        )
+                    ),
+                alertas_activas INTEGER NOT NULL DEFAULT 1
+                    CHECK (alertas_activas IN (0, 1)),
+                activo INTEGER NOT NULL DEFAULT 1
+                    CHECK (activo IN (0, 1)),
+                fecha_creacion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+        # Registro de alertas de inventario detectadas.
+        conexion.execute("""
+            CREATE TABLE IF NOT EXISTS alertas_inventario(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                producto_id INTEGER NOT NULL,
+                stock_detectado REAL NOT NULL,
+                stock_minimo REAL NOT NULL,
+                fecha_deteccion TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                fecha_notificacion TEXT,
+                estado TEXT NOT NULL DEFAULT 'pendiente'
+                    CHECK (
+                        estado IN (
+                            'pendiente',
+                            'notificada',
+                            'resuelta'
+                        )
+                    ),
+
+                FOREIGN KEY (producto_id)
+                    REFERENCES productos(id)
+            )
+        """)
+
+
         conexion.commit()
 
     except Exception:
